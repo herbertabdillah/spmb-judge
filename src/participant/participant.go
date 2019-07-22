@@ -6,19 +6,14 @@ import(
 const(
 	Ipa = 0
 	Ips = 1
-
 )
-type ParticipantContract interface {
-	Add(id int32, choosenDepartment []int32)
-}
 
-// Participant
 type Participant struct {
 	Id               int32
 	Ipa              float32
 	Ips              float32
 	ChosenDepartment []int32
-	//status int
+	Status int
 }
 
 func (p Participant) GetScore(cluster int) float32 {
@@ -35,9 +30,9 @@ func NewParticipant() Participant{
 	return Participant{}
 }
 
-func (p Participant) Add(id int32, choosenDepartment []int32) {
+func (p Participant) AddParticipant(id int32, choosenDepartment []int32) {
 	p.ChosenDepartment = choosenDepartment
-	fmt.Println("Add ", id, choosenDepartment, "Success")
+	fmt.Println("AddDepartment ", id, choosenDepartment, "Success")
 	p.Id = id
 }
 
