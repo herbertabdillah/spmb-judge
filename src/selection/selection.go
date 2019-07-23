@@ -1,8 +1,7 @@
 package selection
 
 import (
-	"../department"
-	"../participant"
+
 	"fmt"
 )
 
@@ -12,11 +11,11 @@ const(
 )
 
 type Selection struct{
-	DepartmentList []*department.Department
-	ParticipantList []*participant.Participant
-	GetScore func(participantParams interface{}, args interface{}) float32
+	DepartmentList []*Department
+	ParticipantList []*Participant
+	GetScore func(participantParams *interface{}, args interface{}) float32
 }
-func (s Selection) InsertToDepProcess(p *participant.Participant, d *department.Department, score float32){
+func (s *Selection) InsertToDepProcess(p *Participant, d *Department, score float32){
 	if d.AcceptedParticipant == nil {
 		d.AcceptedParticipant = append(d.AcceptedParticipant, p)
 		return
@@ -34,13 +33,13 @@ func (s Selection) InsertToDepProcess(p *participant.Participant, d *department.
 			}
 		}
 		if score > thisScore {
-			d.AcceptedParticipant = append(d.AcceptedParticipant[:i],append([]*participant.Participant{p}, d.AcceptedParticipant[i:]...)...)
+			d.AcceptedParticipant = append(d.AcceptedParticipant[:i],append([]*Participant{p}, d.AcceptedParticipant[i:]...)...)
 			break
 		}
 	}
 }
 
-func (s Selection) InsertToDep(p *participant.Participant, d *department.Department) {
+func (s *Selection) InsertToDep(p *Participant, d *Department) {
 	score := p.GetScore(d.Params)
 	isFull := len(d.AcceptedParticipant) >= int(d.Quota)
 	//isScoreHigher := score > d.AcceptedParticipant[len(d.AcceptedParticipant)-1].GetScore(d.Cluster)
@@ -54,14 +53,14 @@ func (s Selection) InsertToDep(p *participant.Participant, d *department.Departm
 		d.AcceptedParticipant = d.AcceptedParticipant[:len(d.AcceptedParticipant)-1]
 	}
 }
-func (s Selection) Insert(p *participant.Participant) {
+func (s *Selection) Insert(p *Participant) {
 	departmentIndex := p.ChosenDepartment[0]
 	p.ChosenDepartment = p.ChosenDepartment[1:]
 	department := s.DepartmentList[departmentIndex]
 	s.InsertToDep(p, department)
 }
 
-func (s Selection) Print(){
+func (s *Selection) Print(){
 	for _,v := range s.DepartmentList {
 		fmt.Print(v.Id, " : ")
 		for _, p := range v.AcceptedParticipant {

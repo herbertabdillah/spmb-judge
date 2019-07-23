@@ -1,29 +1,25 @@
 package selection
 
-import (
-	"../department"
-	"../participant"
-)
 var SelectionPtr *Selection
 func NewSelection() *Selection {
 	SelectionPtr = &Selection{}
 	return SelectionPtr
 }
 
-func (s Selection) SetScoringMethod(f func(participantParams interface{}, args interface{}) float32){
+func (s *Selection) SetScoringMethod(f func(participantParams *interface{}, args interface{}) float32){
 	s.GetScore = f
 }
 
-func (s Selection) AddDepartment(id int32, quota int32, params interface{}) {
-	n := department.NewDepartment(id, quota, params)
+func (s *Selection) AddDepartment(id int32, quota int32, params interface{}) {
+	n := NewDepartment(id, quota, params)
 	s.DepartmentList = append(s.DepartmentList, n)
 }
 
-func (s Selection) AddParticipant(id int32, param interface{}, chosenDepartment []int32) {
-	n := participant.NewParticipant(id, param, chosenDepartment)
+func (s *Selection) AddParticipant(id int32, param interface{}, chosenDepartment []int32) {
+	n := NewParticipant(id, param, chosenDepartment)
 	s.ParticipantList = append(s.ParticipantList, n)
 }
-func (s Selection) Execute(){
+func (s *Selection) Execute(){
 	isDone := false
 	for !isDone {
 		isDone = true
@@ -40,6 +36,6 @@ func (s Selection) Execute(){
 		}
 	}
 }
-func (s Selection) GetResult() {
-
+func (s *Selection) GetResult() {
+	s.Print()
 }
