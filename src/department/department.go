@@ -1,20 +1,18 @@
 package department
 import (
 	"../participant"
-	"fmt"
 )
 
 type Department struct {
 	Id int32
 	Quota int32
-	Cluster int
+	Params interface{}
 	AcceptedParticipant []*participant.Participant
 }
-func (d Department) AddDepartment(id int32, quota int32) {
-	d.Id = id
-	d.Quota = quota
 
-	fmt.Println("AddDepartment ", id, quota, "Success")
+func NewDepartment(id int32, quota int32, params interface{}) *Department {
+	return &Department{Id: id, Quota: quota, Params: params, AcceptedParticipant:nil}
 }
+
 
 

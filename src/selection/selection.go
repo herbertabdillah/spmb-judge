@@ -14,18 +14,19 @@ const(
 type Selection struct{
 	DepartmentList []*department.Department
 	ParticipantList []*participant.Participant
+	GetScore func(participantParams interface{}, args interface{}) float32
 }
 func (s Selection) InsertToDepProcess(p *participant.Participant, d *department.Department, score float32){
 	if d.AcceptedParticipant == nil {
 		d.AcceptedParticipant = append(d.AcceptedParticipant, p)
 		return
-	} else if score < d.AcceptedParticipant[len(d.AcceptedParticipant) - 1].GetScore(d.Cluster) {
+	} else if score < d.AcceptedParticipant[len(d.AcceptedParticipant) - 1].GetScore(d.Params) {
 		d.AcceptedParticipant = append(d.AcceptedParticipant, p)
 	}
 	for i := len(d.AcceptedParticipant) - 1; i >= 0; i-- {
-		thisScore := d.AcceptedParticipant[i].GetScore(d.Cluster)
+		thisScore := d.AcceptedParticipant[i].GetScore(d.Params)
 		if i > 0 {
-			NextScore := d.AcceptedParticipant[i - 1].GetScore(d.Cluster)
+			NextScore := d.AcceptedParticipant[i - 1].GetScore(d.Params)
 			if thisScore == NextScore {
 				continue
 			} else if score > NextScore {
@@ -40,13 +41,13 @@ func (s Selection) InsertToDepProcess(p *participant.Participant, d *department.
 }
 
 func (s Selection) InsertToDep(p *participant.Participant, d *department.Department) {
-	score := p.GetScore(d.Cluster)
+	score := p.GetScore(d.Params)
 	isFull := len(d.AcceptedParticipant) >= int(d.Quota)
 	//isScoreHigher := score > d.AcceptedParticipant[len(d.AcceptedParticipant)-1].GetScore(d.Cluster)
 	if !isFull {
 		s.InsertToDepProcess(p, d, score)
 		p.Status = int(d.Id)
-	} else if isFull && score > d.AcceptedParticipant[len(d.AcceptedParticipant)-1].GetScore(d.Cluster) {
+	} else if isFull && score > d.AcceptedParticipant[len(d.AcceptedParticipant)-1].GetScore(d.Params) {
 		d.AcceptedParticipant[len(d.AcceptedParticipant) - 1].Status = OnProcess
 		s.InsertToDepProcess(p, d, score)
 		p.Status = int(d.Id)
@@ -58,23 +59,6 @@ func (s Selection) Insert(p *participant.Participant) {
 	p.ChosenDepartment = p.ChosenDepartment[1:]
 	department := s.DepartmentList[departmentIndex]
 	s.InsertToDep(p, department)
-}
-func (s Selection) Execute(){
-	isDone := false
-	for !isDone {
-		isDone = true
-		for _, v := range s.ParticipantList {
-			if  v.Status >= 0{
-				continue
-			} else if len(v.ChosenDepartment) == 0 && v.Status == OnProcess {
-				v.Status = NotAccepted
-				continue
-			} else {
-				isDone = false
-			}
-			s.Insert(v)
-		}
-	}
 }
 
 func (s Selection) Print(){
