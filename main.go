@@ -1,8 +1,8 @@
 package main
 
 import (
-	"github.com/herbertabdillah/selection"
 	"fmt"
+	"github.com/herbertabdillah/spmb-judge/selection"
 )
 
 const(
