@@ -1,7 +1,7 @@
 package main
 
 import (
-	"./selection"
+	"github.com/herbertabdillah/selection"
 	"fmt"
 )
 
