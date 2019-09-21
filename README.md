@@ -1,5 +1,8 @@
 # spmb-judge documentation (stil on process)
 Highly customizeable library for selection in college admission, school admission, etc.
+(still on process)
+(algorithm stil "brute force")
+(code not too clean)
 
 ## Overview
 ### Input
